@@ -1,0 +1,80 @@
+"use client"
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import axios from "axios";
+
+export default function Signup() {
+  const router = useRouter();
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+    username: "",
+  });
+  const [loading, setLoading] = useState(false);
+
+  const onSignUp = async () => {
+    try {
+      setLoading(true);
+      await axios.post("/api/users/signup", user);
+      router.push("/login");
+    } catch (error: any) {
+      console.log(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-black">
+      <div className="w-full max-w-sm space-y-8">
+        <div className="text-center">
+          <h1 className="text-2xl font-light text-white mb-8">Sign Up</h1>
+        </div>
+
+        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onSignUp(); }}>
+          <input
+            type="text"
+            placeholder="Username"
+            required
+            className="w-full px-4 py-3 bg-black border border-gray-800 text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors"
+            value={user.username}
+            onChange={(e) => setUser({ ...user, username: e.target.value })}
+          />
+
+          <input
+            type="email"
+            placeholder="Email"
+            required
+            className="w-full px-4 py-3 bg-black border border-gray-800 text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors"
+            value={user.email}
+            onChange={(e) => setUser({ ...user, email: e.target.value })}
+          />
+
+          <input
+            type="password"
+            placeholder="Password"
+            required
+            className="w-full px-4 py-3 bg-black border border-gray-800 text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors"
+            value={user.password}
+            onChange={(e) => setUser({ ...user, password: e.target.value })}
+          />
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 mt-6 bg-black text-gray-200 font-medium hover:bg-gray-200 hover:text-black disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {loading ? 'Creating...' : 'Sign Up'}
+          </button>
+        </form>
+
+        <div className="text-center">
+          <Link href="/login" className="text-gray-400 hover:text-white text-sm transition-colors">
+            Already have an account?
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
