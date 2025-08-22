@@ -17,6 +17,7 @@ export default function Signup() {
   const [loading, setloading] = useState(false)
   const [buttonDisabled, setbuttonDisabled] = useState(false)
 
+  // if user changes email or password or username, then button should be enabled
   useEffect(() => {
     if(user.email.length > 0 && user.password.length > 0 && user.username.length > 0){
       setbuttonDisabled(false)
@@ -30,9 +31,10 @@ export default function Signup() {
   const onSignUp = async () => {
     try {
       setloading(true)
-      const response = await axios.post("/api/users/signup", user)
+      const response = await axios.post("/api/users/signup", user) // (path to signup fucntion in api , route )
       toast.success("User created successfully")
       router.push("/login")
+      console.log(response)
     } catch (error:any) {
       console.log("Signup error:", error)
       toast.error(error.response?.data?.error || error.message || "Something went wrong")
